@@ -19,7 +19,7 @@ json_obj = {
     "face_detected": True,
     "error_code": 0
 }
-# some data
+# some more data
 
 cwd = os.getcwd()
 UPLOAD_FOLDER = cwd + '/temp_pool'
