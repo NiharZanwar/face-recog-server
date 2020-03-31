@@ -9,6 +9,11 @@ import pymysql.cursors
 import uuid
 import configparser
 
+"""
+directories required : pool, temp_pool
+"""
+
+
 app = Flask(__name__)
 
 json_obj = {
@@ -17,9 +22,9 @@ json_obj = {
     "encoded": True,
     "time_taken": 0.0,
     "face_detected": True,
-    "error_code": 0
+    "error_code": 0,
+    "error_message": ""
 }
-# some more data
 
 cwd = os.getcwd()
 UPLOAD_FOLDER = cwd + '/temp_pool'
@@ -86,6 +91,10 @@ def sql_transaction(face_id, camera_id, pool_id, type, person_id, duplicate, dat
 
 def enroll_face(filename, pool_id, camera_id, face_detected, type, date_time):
     response = json_obj
+    if str(pool_id) not in os.listdir(pool_dir):
+        os.mkdir(pool_dir + '/' + str(pool_id))
+        os.mkdir(pool_dir + '/' + str(pool_id) + '/encodings')
+        os.mkdir(pool_dir + '/' + str(pool_id) + '/faces')
 
     image = face_recognition.load_image_file(UPLOAD_FOLDER + '/' + filename)
 
@@ -100,6 +109,10 @@ def enroll_face(filename, pool_id, camera_id, face_detected, type, date_time):
                 return response
             except:
                 return response
+        if len(face_locations) > 1:
+            os.remove(UPLOAD_FOLDER + '/' + filename)
+            response["error_message"] = "upload picture with only 1 face"
+            response["encoded"] = False
 
     try:
         encoding = face_recognition.face_encodings(image, num_jitters=1)[0]
@@ -143,9 +156,6 @@ def enroll():
     if file.filename.split('.')[1] not in format_allowed:
         return 'upload correct file format'
 
-    if pool_id not in os.listdir(pool_dir):
-        return 'pool_id does not exist'
-
     date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # file.filename = str(int(time.time()*100)) + '.jpg'
     file.filename = str(uuid.uuid4().fields[-1])[:7] + '.jpg'
@@ -186,6 +196,11 @@ if __name__ == '__main__':
         else:
             print("mySQL connection success")
             break
+
+    if 'pool' not in os.listdir(os.getcwd()):
+        os.mkdir(os.getcwd() + '/pool')
+    if 'temp_pool' not in os.listdir(os.getcwd()):
+        os.mkdir(os.getcwd() + '/temp_pool')
 
     app.run(host='0.0.0.0', port=server_port, debug=True)
 
