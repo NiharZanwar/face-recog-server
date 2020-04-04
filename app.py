@@ -13,7 +13,6 @@ import configparser
 directories required : pool, temp_pool
 """
 
-
 app = Flask(__name__)
 
 json_obj = {
@@ -30,11 +29,10 @@ cwd = os.getcwd()
 UPLOAD_FOLDER = cwd + '/temp_pool'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 format_allowed = ['jpg', 'jpeg']
-pool_dir = cwd + '/pool'
+pool_dir = '../../data/pool'
 
 
 def sql_connection():
-
     try:
         connection = pymysql.connect(host=db_ip,
                                      user=db_uname,
@@ -55,10 +53,11 @@ def sql_faceid(face_id, camera_id, pool_id, type, person_id, date_time):
     else:
         try:
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO `temple_face`.`face_table` (`face_id`, `pool_id`, `camera_id`, `type`, `person_id`,"
-                       " `date_time`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(str(face_id), str(pool_id),
-                                                                                          str(camera_id), str(type),
-                                                                                          str(person_id), str(date_time)))
+            cursor.execute(
+                "INSERT INTO `temple_face`.`face_table` (`face_id`, `pool_id`, `camera_id`, `type`, `person_id`,"
+                " `date_time`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(str(face_id), str(pool_id),
+                                                                                   str(camera_id), str(type),
+                                                                                   str(person_id), str(date_time)))
             connection.commit()
             connection.close()
             # print("sql faceid registered - " + str(face_id))
@@ -75,11 +74,15 @@ def sql_transaction(face_id, camera_id, pool_id, type, person_id, duplicate, dat
     else:
         try:
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO `temple_face`.`txn_table` (`date_time`, `pool_id`, `camera_id`, `type`, `person_id`,"
-                       " `face_id`, `duplicate`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(str(date_time), str(pool_id),
-                                                                                          str(camera_id), str(type),
-                                                                                          str(person_id), str(face_id),
-                                                                                        str(duplicate)))
+            cursor.execute(
+                "INSERT INTO `temple_face`.`txn_table` (`date_time`, `pool_id`, `camera_id`, `type`, `person_id`,"
+                " `face_id`, `duplicate`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(str(date_time),
+                                                                                                    str(pool_id),
+                                                                                                    str(camera_id),
+                                                                                                    str(type),
+                                                                                                    str(person_id),
+                                                                                                    str(face_id),
+                                                                                                    str(duplicate)))
             connection.commit()
             # print("sql txn registered - " + str(face_id) + "duplicate:" + str(duplicate))
             connection.close()
@@ -169,12 +172,12 @@ def enroll():
 
 if __name__ == '__main__':
     while True:
-        if 'face-server.conf' not in os.listdir(os.getcwd()):
+        if 'face-server.conf' not in os.listdir('../../data'):
             print("config file not present")
             time.sleep(10)
         else:
             config = configparser.ConfigParser()
-            config.read("face-server.conf")
+            config.read("../../data/face-server.conf")
             try:
 
                 server_ip = config["server_details"]["ip"]
@@ -184,7 +187,7 @@ if __name__ == '__main__':
                 print("Error while parsing config file.")
 
     while True:
-        config.read("face-server.conf")
+        config.read("../../data/face-server.conf")
         db_ip = config["mysql"]["ip"]
         db_port = config["mysql"]["port"]
         db_uname = config["mysql"]["username"]
@@ -197,11 +200,9 @@ if __name__ == '__main__':
             print("mySQL connection success")
             break
 
-    if 'pool' not in os.listdir(os.getcwd()):
-        os.mkdir(os.getcwd() + '/pool')
+    if 'pool' not in os.listdir("../../data"):
+        os.mkdir('../../data/pool')
     if 'temp_pool' not in os.listdir(os.getcwd()):
         os.mkdir(os.getcwd() + '/temp_pool')
 
     app.run(host='0.0.0.0', port=server_port, debug=True)
-
-
