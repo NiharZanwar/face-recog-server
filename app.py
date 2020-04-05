@@ -145,6 +145,7 @@ def enroll_face(filename, pool_id, camera_id, face_detected, type, date_time):
     shutil.move(UPLOAD_FOLDER + '/' + filename, faces_dir + '/' + filename)
     sql_transaction(filename.split('.')[0], camera_id, pool_id, type, '', 0, date_time)
     result = sql_faceid(filename.split('.')[0], camera_id, pool_id, type, '', date_time)
+    response["duplicate"] = False
     return response
 
 
