@@ -8,6 +8,7 @@ import json
 import pymysql.cursors
 import uuid
 import configparser
+import shutil
 
 """
 directories required : pool, temp_pool
@@ -141,7 +142,7 @@ def enroll_face(filename, pool_id, camera_id, face_detected, type, date_time):
 
     numpy.save(numpy_dir + '/' + filename.split('.')[0], encoding)
     response['face_id'] = filename.split('.')[0]
-    os.rename(UPLOAD_FOLDER + '/' + filename, faces_dir + '/' + filename)
+    shutil.move(UPLOAD_FOLDER + '/' + filename, faces_dir + '/' + filename)
     sql_transaction(filename.split('.')[0], camera_id, pool_id, type, '', 0, date_time)
     result = sql_faceid(filename.split('.')[0], camera_id, pool_id, type, '', date_time)
     return response
@@ -206,3 +207,5 @@ if __name__ == '__main__':
         os.mkdir(os.getcwd() + '/temp_pool')
 
     app.run(host='0.0.0.0', port=server_port, debug=True)
+
+
