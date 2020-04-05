@@ -8,6 +8,6 @@ cd /app/face-recog-server
 python app.py &
 ps -aef
 cd /data;
-python -m http.server 8008 &
-echo "http server runnong"
+python -m http.server 8008
+
 
