@@ -10,4 +10,4 @@ COPY install.sh /app
 
 RUN chmod +x /app/install.sh
 
-ENTRYPOINT ["./app/install.sh", "&"]
+ENTRYPOINT ["./app/install.sh"]
