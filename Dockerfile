@@ -10,7 +10,4 @@ COPY install.sh /app
 
 RUN chmod +x /app/install.sh
 
-ENTRYPOINT ["./app/install.sh"]
-
-EXPOSE 5005/tcp
-EXPOSE 8008/tcp
+ENTRYPOINT ["./app/install.sh &"]
