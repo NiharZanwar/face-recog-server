@@ -8,6 +8,6 @@ cd /data;
 
 python -m http.server 8008 &
 echo "http server runnong"
-cd /app
+cd /app/face-recog-server
 
 python app.py > /data/log
