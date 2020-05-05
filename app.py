@@ -31,6 +31,13 @@ UPLOAD_FOLDER = cwd + '/temp_pool'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 format_allowed = ['jpg', 'jpeg']
 pool_dir = '../../data/pool'
+log_dir = '../../data/logs'
+
+
+def make_log(string):
+    string += '\n'
+    with open(log_dir + '/transaction_log.txt', 'a+') as log:
+        log.write(string)
 
 
 def sql_connection():
@@ -204,6 +211,9 @@ if __name__ == '__main__':
 
     if 'pool' not in os.listdir("../../data"):
         os.mkdir('../../data/pool')
+    if 'logs' not in os.listdir("../../data"):
+        os.mkdir('../../data/logs')
+
     if 'temp_pool' not in os.listdir(os.getcwd()):
         os.mkdir(os.getcwd() + '/temp_pool')
 
